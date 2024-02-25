@@ -1,0 +1,19 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev --no-fork",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "nuxt": "npm:nuxt-nightly@latest",
+    "nitropack": "npm:nitropack-nightly@latest",
+    "nuxi": "npm:nuxi-nightly@latest",
+    "vue": "^3.4.19",
+    "vue-router": "^4.3.0"
+  }
+}
