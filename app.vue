@@ -71,7 +71,7 @@ useServerHead({
 </script>
 
 <template>
-  <div class="h-screen flex flex-col justify-between" style="background-color: #1a1a1a">
+  <div class="h-screen flex flex-col justify-between">
     <main>
       <div class="flex flex-col text-white" style="position: fixed; right: 0;">
         <a href="https://github.com/pi0/nuxt-websocket">
@@ -81,7 +81,7 @@ useServerHead({
 
 
       <!-- Messages -->
-      <div id="messages" class="flex-grow flex flex-col justify-end px-4 py-8">
+      <div id="messages" class="flex-grow flex flex-col justify-end px-4 py-8 bg-slate-900 h-screen">
         <div class="flex items-center mb-4" v-for="message in store.messages">
           <div class="flex flex-col">
             <p class="text-gray-500 mb-1 text-xs ml-10">{{ message.user }}</p>
