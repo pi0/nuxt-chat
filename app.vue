@@ -84,6 +84,8 @@ onMounted(async () => {
     <pre id="logs">
       <div v-for="log in logs" :key="log">{{ log }}</div>
     </pre>
+    <hr>
+    Source code: <a href="https://github.com/pi0/nuxt-websocket">https://github.com/pi0/nuxt-websocket</a>
   </div>
 </template>
 
