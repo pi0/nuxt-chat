@@ -10,10 +10,13 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "nuxt": "npm:nuxt-nightly@latest",
     "nitropack": "npm:nitropack-nightly@latest",
     "nuxi": "npm:nuxi-nightly@latest",
+    "nuxt": "npm:nuxt-nightly@latest",
     "vue": "^3.4.19",
     "vue-router": "^4.3.0"
+  },
+  "devDependencies": {
+    "@nuxtjs/tailwindcss": "^6.11.4"
   }
 }

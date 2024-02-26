@@ -4,5 +4,7 @@ export default defineNuxtConfig({
     experimental: {
       websocket: true
     }
-  }
+  },
+
+  modules: ["@nuxtjs/tailwindcss"]
 })
