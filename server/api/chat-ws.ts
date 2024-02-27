@@ -11,7 +11,7 @@ export default defineWebSocketHandler({
     users.set(userId, { online: true });
 
     const stats = getStats();
-    peer.send({ user: "server", message: `Welcome to the server ${peer}! (Online users: ${stats.online}/${stats.total})` });
+    peer.send({ user: "server", message: `Welcome to the server ${userId}! (Online users: ${stats.online}/${stats.total})` });
 
     peer.subscribe("chat");
     peer.publish("chat", { user: "server", message: `${peer} joined!` });
@@ -33,7 +33,7 @@ export default defineWebSocketHandler({
       peer.publish("chat", _message);
     }
 
-    await addMessage(peer.toString(), message.text());
+    await addMessage(userId, message.text());
   },
 
   close(peer, details) {

@@ -6,7 +6,7 @@ const messages = useState<{ id: number, user: string, message: string, created_a
 
 const userId = useCookie<string>("userId")
 if (!userId.value) {
-  userId.value = Math.random().toString(36).substring(7);
+  userId.value = generateName()
 }
 
 if (!messages.value.length) {
