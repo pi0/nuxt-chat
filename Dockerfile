@@ -15,7 +15,7 @@ COPY . .
 RUN NODE_ENV=production bun run build
 
 # Production
-FROM --platform=$BUILDPLATFORM oven/bun:distroless AS production
+FROM --platform=arm64 oven/bun:distroless AS production
 COPY --from=build /src/.output /app
 EXPOSE 3000/tcp
 ENV HOST=0.0.0.0
