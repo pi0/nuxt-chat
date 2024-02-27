@@ -85,7 +85,7 @@ useServerHead({
       </div>
 
       <!-- Messages -->
-      <div id="messages" class="flex-grow flex flex-col justify-end px-4 pt-8 pb-12 bg-slate-900 h-screen">
+      <div id="messages" class="flex-grow flex flex-col justify-end px-4 pt-8 pb-21 sm:pb-12 bg-slate-900 h-screen">
         <div class="flex items-center mb-4" v-for="message in store.messages" :key="message.id">
           <div class="flex flex-col">
             <p class="text-gray-500 mb-1 text-xs ml-10">{{ message.user }}</p>
