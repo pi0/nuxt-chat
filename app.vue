@@ -22,6 +22,7 @@ const log = (user: string, ...args: string[]) => {
     user: user,
     created_at: new Date().toLocaleString(),
   });
+  scroll();
 };
 
 const connect = async () => {
@@ -55,6 +56,13 @@ const clear = () => {
   log("system", "previous messages cleared");
 };
 
+const scroll = () => {
+  nextTick(() => {
+    console.log('scrooling')
+    window.scrollTo(0, document.body.scrollHeight + 100);
+  })
+}
+
 const send = () => {
   console.log("sending message...");
   if (message.value) {
@@ -70,6 +78,7 @@ const ping = () => {
 
 onMounted(async () => {
   connect();
+  scroll();
 });
 
 useServerHead({
