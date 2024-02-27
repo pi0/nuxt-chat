@@ -9,8 +9,10 @@ if (!userId.value) {
   userId.value = Math.random().toString(36).substring(7);
 }
 
-const res = await $fetch("/api/messages")
-messages.value.push(...res.messages)
+if (!messages.value.length) {
+  const res = await $fetch("/api/messages")
+  messages.value.push(...res.messages)
+}
 
 const log = (user: string, ...args: string[]) => {
   console.log("[ws]", user, ...args);
