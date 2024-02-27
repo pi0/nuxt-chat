@@ -1,10 +1,19 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  modules: ["@nuxtjs/tailwindcss"],
   nitro: {
     experimental: {
-      websocket: true
-    }
+      websocket: true,
+      tasks: true,
+      database: true,
+    },
   },
-
-  modules: ["@nuxtjs/tailwindcss"]
+  $production: {
+    nitro: {
+      database: {
+        default: {
+          connector: 'bun'
+        }
+      }
+    }
+  }
 })

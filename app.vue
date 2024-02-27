@@ -3,21 +3,21 @@ let ws: WebSocket | undefined;
 
 const store = reactive({
   message: "",
-  messages: [] as { user: string, text: string, date: string }[],
+  messages: [] as { user: string, message: string, created_at: string }[],
 });
 
 const log = (user: string, ...args: string[]) => {
   console.log("[ws]", user, ...args);
   store.messages.push({
-    text: args.join(" "),
+    message: args.join(" "),
     user: user,
-    date: new Date().toLocaleString(),
+    created_at: new Date().toLocaleString(),
   });
 };
 
 const connect = async () => {
   const isSecure = location.protocol === "https:";
-  const url = (isSecure ? "wss://" : "ws://") + location.host + "/chat-ws";
+  const url = (isSecure ? "wss://" : "ws://") + location.host + "/api/chat-ws";
   if (ws) {
     log("ws", "Closing previous connection before reconnecting...");
     ws.close();
@@ -63,6 +63,10 @@ const rand = Math.random()
 
 onMounted(() => {
   connect();
+  $fetch("/api/messages").then((res) => {
+    store.messages = res.messages;
+    console.log("messages", JSON.stringify(store.messages));
+  });
 });
 
 useServerHead({
@@ -90,7 +94,7 @@ useServerHead({
                 :src="'https://www.gravatar.com/avatar/' + encodeURIComponent(message.user + rand) + '?s=512&d=monsterid'"
                 alt="Avatar" class="w-8 h-8 rounded-full" />
               <div class="ml-2 bg-gray-800 rounded-lg p-2">
-                <p class="text-white">{{ message.text }}</p>
+                <p class="text-white">{{ message.message }}</p>
               </div>
             </div>
             <p class="text-gray-500 mt-1 text-xs ml-10">{{ message.date }}</p>

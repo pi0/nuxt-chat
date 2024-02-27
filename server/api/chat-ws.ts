@@ -1,3 +1,5 @@
+import { addMessage } from "../utils/database";
+
 export default defineWebSocketHandler({
   open(peer) {
     console.log(`[ws] open ${peer}`);
@@ -5,8 +7,9 @@ export default defineWebSocketHandler({
     peer.subscribe("chat");
     peer.publish("chat", { user: "server", message: `${peer} joined!` });
   },
-  message(peer, message) {
+  async message(peer, message) {
     console.log(`[ws] message ${peer} ${message.text()}`);
+    await addMessage(peer.toString(), message.text());
     if (message.text() === "ping") {
       peer.send({ user: "server", message: "pong" });
     } else {

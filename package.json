@@ -4,10 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "nuxt build --preset bun",
-    "dev": "nuxt dev --no-fork",
-    "generate": "nuxt generate",
-    "postinstall": "nuxt prepare",
-    "preview": "nuxt preview"
+    "dev": "nuxt dev"
   },
   "dependencies": {
     "@nuxtjs/tailwindcss": "^6.11.4",
@@ -17,5 +14,9 @@
     "vue": "^3.4.19",
     "vue-router": "^4.3.0"
   },
-  "packageManager": "bun@1.0.29"
+  "packageManager": "bun@1.0.29",
+  "devDependencies": {
+    "@types/bun": "^1.0.8",
+    "better-sqlite3": "^9.4.3"
+  }
 }
