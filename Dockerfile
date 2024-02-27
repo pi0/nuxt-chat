@@ -1,5 +1,5 @@
 # Base
-FROM oven/bun:1 as base
+FROM oven/bun:slim as base
 
 # Deps
 FROM base AS deps
