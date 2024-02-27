@@ -65,7 +65,7 @@ const rand = Math.random()
 onMounted(() => {
   connect();
   $fetch("/api/messages").then((res) => {
-    store.messages = res.messages;
+    store.messages.push(...res.messages);
   });
 });
 
