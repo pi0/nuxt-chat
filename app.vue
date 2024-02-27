@@ -17,7 +17,7 @@ const log = (user: string, ...args: string[]) => {
 
 const connect = async () => {
   const isSecure = location.protocol === "https:";
-  const url = (isSecure ? "wss://" : "ws://") + location.host + "/_ws";
+  const url = (isSecure ? "wss://" : "ws://") + location.host + "/chat-ws";
   if (ws) {
     log("ws", "Closing previous connection before reconnecting...");
     ws.close();
