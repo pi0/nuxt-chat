@@ -1,0 +1,10 @@
+version: "3.7"
+
+services:
+  app:
+    image: ghcr.io/pi0/nuxt-chat:main
+    restart: unless-stopped
+    ports:
+        - 3000:3000
+    volumes:
+      - ./.data:/app/.data
