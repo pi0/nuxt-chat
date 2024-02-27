@@ -1,16 +1,16 @@
-import { addMessage } from "../utils/database";
+import type { Peer } from 'crossws';
+import { parse as parseCookies } from "cookie-es";
 
-const stats = {
-  online: 0,
-  total: 0,
-}
+const users = new Map<string, { online: boolean }>();
 
 export default defineWebSocketHandler({
   open(peer) {
     console.log(`[ws] open ${peer}`);
-    stats.online++;
-    stats.total++;
 
+    const userId = getUserId(peer);
+    users.set(userId, { online: true });
+
+    const stats = getStats();
     peer.send({ user: "server", message: `Welcome to the server ${peer}! (Online users: ${stats.online}/${stats.total})` });
 
     peer.subscribe("chat");
@@ -19,32 +19,51 @@ export default defineWebSocketHandler({
   },
   async message(peer, message) {
     console.log(`[ws] message ${peer} ${message.text()}`);
-    await addMessage(peer.toString(), message.text());
+
+    const userId = getUserId(peer);
+
     if (message.text() === "ping") {
       peer.send({ user: "server", message: "pong" });
     } else {
       const _message = {
-        user: peer.toString(),
+        user: userId,
         message: message.text(),
       };
-      peer.send(_message);
+      peer.send(_message); // echo back
       peer.publish("chat", _message);
     }
+
+    await addMessage(peer.toString(), message.text());
   },
-  upgrade(req) {
-    console.log("[ws] upgrade", req.url);
-    return {
-      headers: {
-        "x-powered-by": "cross-ws",
-        "set-cookie": "cross-ws=1; SameSite=None; Secure",
-      },
-    };
-  },
+
   close(peer, details) {
-    console.log(`[ws] close ${peer}`, details);
-    stats.online--;
+    console.log(`[ws] close ${peer}`);
+
+    const userId = getUserId(peer);
+    users.set(userId, { online: false });
   },
+
   error(peer, error) {
     console.log(`[ws] error ${peer}`, error);
   },
+
+  upgrade(req) {
+    const userId = Math.random().toString(36).slice(2);
+    return {
+      headers: {
+        "x-powered-by": "cross-ws",
+        "set-cookie": `chatUserId=${userId}; SameSite=None; Secure`,
+      },
+    };
+  },
 });
+
+function getUserId(peer: Peer) {
+  const cookies = parseCookies(new Headers(peer.headers).get("cookie") || "")
+  return cookies.chatUserId || "";
+}
+
+function getStats() {
+  const online = Array.from(users.values()).filter((u) => u.online).length;
+  return { online, total: users.size };
+}
