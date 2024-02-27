@@ -3,12 +3,13 @@ let ws: WebSocket | undefined;
 
 const store = reactive({
   message: "",
-  messages: [] as { user: string, message: string, created_at: string }[],
+  messages: [] as { id: number, user: string, message: string, created_at: string }[],
 });
 
 const log = (user: string, ...args: string[]) => {
   console.log("[ws]", user, ...args);
   store.messages.push({
+    id: Math.random(),
     message: args.join(" "),
     user: user,
     created_at: new Date().toLocaleString(),
@@ -65,7 +66,6 @@ onMounted(() => {
   connect();
   $fetch("/api/messages").then((res) => {
     store.messages = res.messages;
-    console.log("messages", JSON.stringify(store.messages));
   });
 });
 
@@ -97,7 +97,7 @@ useServerHead({
                 <p class="text-white">{{ message.message }}</p>
               </div>
             </div>
-            <p class="text-gray-500 mt-1 text-xs ml-10">{{ message.date }}</p>
+            <p class="text-gray-500 mt-1 text-xs ml-10">{{ message.created_at }}</p>
           </div>
         </div>
       </div>
