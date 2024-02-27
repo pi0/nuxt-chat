@@ -1,22 +1,21 @@
 {
-  "name": "nuxt-app",
+  "name": "nuxt-chat",
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "nuxt build",
+    "build": "nuxt build --preset bun",
     "dev": "nuxt dev --no-fork",
     "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "preview": "nuxt preview"
   },
   "dependencies": {
+    "@nuxtjs/tailwindcss": "^6.11.4",
     "nitropack": "npm:nitropack-nightly@latest",
     "nuxi": "npm:nuxi-nightly@latest",
     "nuxt": "npm:nuxt-nightly@latest",
     "vue": "^3.4.19",
     "vue-router": "^4.3.0"
   },
-  "devDependencies": {
-    "@nuxtjs/tailwindcss": "^6.11.4"
-  }
+  "packageManager": "bun@1.0.29"
 }
