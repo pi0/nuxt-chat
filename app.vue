@@ -3,22 +3,21 @@ let ws: WebSocket | undefined;
 
 const store = reactive({
   message: "",
-  messages: [] as { id: number, user: string, message: string, created_at: string }[],
+  messages: [] as { user: string, text: string, date: string }[],
 });
 
 const log = (user: string, ...args: string[]) => {
   console.log("[ws]", user, ...args);
   store.messages.push({
-    id: Math.random(),
-    message: args.join(" "),
+    text: args.join(" "),
     user: user,
-    created_at: new Date().toLocaleString(),
+    date: new Date().toLocaleString(),
   });
 };
 
 const connect = async () => {
   const isSecure = location.protocol === "https:";
-  const url = (isSecure ? "wss://" : "ws://") + location.host + "/api/chat-ws";
+  const url = (isSecure ? "wss://" : "ws://") + location.host + "/_ws";
   if (ws) {
     log("ws", "Closing previous connection before reconnecting...");
     ws.close();
@@ -64,9 +63,6 @@ const rand = Math.random()
 
 onMounted(() => {
   connect();
-  $fetch("/api/messages").then((res) => {
-    store.messages.push(...res.messages);
-  });
 });
 
 useServerHead({
@@ -83,7 +79,6 @@ useServerHead({
         </a>
       </div>
 
-
       <!-- Messages -->
       <div id="messages" class="flex-grow flex flex-col justify-end px-4 pt-8 pb-12 bg-slate-900 h-screen">
         <div class="flex items-center mb-4" v-for="message in store.messages">
@@ -94,32 +89,32 @@ useServerHead({
                 :src="'https://www.gravatar.com/avatar/' + encodeURIComponent(message.user + rand) + '?s=512&d=monsterid'"
                 alt="Avatar" class="w-8 h-8 rounded-full" />
               <div class="ml-2 bg-gray-800 rounded-lg p-2">
-                <p class="text-white">{{ message.message }}</p>
+                <p class="text-white">{{ message.text }}</p>
               </div>
             </div>
-            <p class="text-gray-500 mt-1 text-xs ml-10">{{ message.created_at }}</p>
+            <p class="text-gray-500 mt-1 text-xs ml-10">{{ message.date }}</p>
           </div>
         </div>
       </div>
 
       <!-- Chatbox -->
-      <div class="bg-gray-800 px-4 py-2 flex items-center justify-between fixed bottom-0 w-full">
+      <div class="bg-gray-800 px-4 py-2 flex items-center justify-between fixed bottom-0 w-full flex-col sm:flex-row">
         <div class="w-full min-w-6">
           <input type="text" placeholder="Type your message..."
-            class="w-full rounded-l-lg px-4 py-2 bg-gray-700 text-white focus:outline-none focus:ring focus:border-blue-300"
+            class="w-full rounded-none px-4 py-2 bg-gray-700 text-white focus:outline-none focus:ring focus:border-blue-300 sm:rounded-l-lg"
             @keydown.enter="send" v-model="store.message" />
         </div>
-        <div class="flex">
-          <button class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4" @click="send">
+        <div class="flex w-full">
+          <button class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 w-1/4" @click="send">
             Send
           </button>
-          <button class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4" @click="ping">
+          <button class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 w-1/4" @click="ping">
             Ping
           </button>
-          <button class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4" @click="connect">
+          <button class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 w-1/4" @click="connect">
             Reconnect
           </button>
-          <button class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-r-lg" @click="clear">
+          <button class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 sm:rounded-r-lg w-1/4" @click="clear">
             Clear
           </button>
         </div>
