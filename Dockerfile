@@ -1,5 +1,5 @@
 # Base
-FROM oven/bun:slim as base
+FROM oven/bun as base
 
 # Deps
 FROM base AS deps
@@ -15,9 +15,8 @@ COPY . .
 RUN NODE_ENV=production bun run build
 
 # Production
-FROM base AS production
+FROM --platform=$BUILDPLATFORM oven/bun:distroless AS production
 COPY --from=build /src/.output /app
-USER bun
 EXPOSE 3000/tcp
 ENV HOST=0.0.0.0
-ENTRYPOINT [ "bun", "run", "/app/server/index.mjs" ]
+CMD [ "/app/server/index.mjs" ]
