@@ -3,21 +3,22 @@ let ws: WebSocket | undefined;
 
 const store = reactive({
   message: "",
-  messages: [] as { user: string, text: string, date: string }[],
+  messages: [] as { id: number, user: string, message: string, created_at: string }[],
 });
 
 const log = (user: string, ...args: string[]) => {
   console.log("[ws]", user, ...args);
   store.messages.push({
-    text: args.join(" "),
+    id: Math.random(),
+    message: args.join(" "),
     user: user,
-    date: new Date().toLocaleString(),
+    created_at: new Date().toLocaleString(),
   });
 };
 
 const connect = async () => {
   const isSecure = location.protocol === "https:";
-  const url = (isSecure ? "wss://" : "ws://") + location.host + "/_ws";
+  const url = (isSecure ? "wss://" : "ws://") + location.host + "/api/chat-ws";
   if (ws) {
     log("ws", "Closing previous connection before reconnecting...");
     ws.close();
@@ -63,12 +64,16 @@ const rand = Math.random()
 
 onMounted(() => {
   connect();
+  $fetch("/api/messages").then((res) => {
+    store.messages.push(...res.messages);
+  });
 });
 
 useServerHead({
   title: "Nuxt Chat",
 })
 </script>
+
 
 <template>
   <div class="h-screen flex flex-col justify-between">
