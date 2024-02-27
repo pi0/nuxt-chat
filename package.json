@@ -6,7 +6,7 @@
     "build": "nuxt build --preset bun",
     "dev": "nuxt dev"
   },
-  "devDependencies": {
+  "dependencies": {
     "@nuxtjs/tailwindcss": "^6.11.4",
     "@types/bun": "^1.0.8",
     "nitropack": "npm:nitropack-nightly@latest",
@@ -15,7 +15,7 @@
     "vue": "^3.4.19",
     "vue-router": "^4.3.0"
   },
-  "optionalDependencies": {
+  "devDependencies": {
     "better-sqlite3": "^9.4.3"
   },
   "packageManager": "bun@1.0.29"

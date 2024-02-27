@@ -5,7 +5,7 @@ FROM oven/bun as base
 FROM base AS deps
 WORKDIR /src
 COPY package.json bun.lockb /src/
-RUN cd /src && bun install --frozen-lockfile
+RUN cd /src && bun install --production --frozen-lockfile --ignore-scripts
 
 # Build
 FROM base AS build
