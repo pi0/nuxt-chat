@@ -1,15 +1,21 @@
 <script setup lang="ts">
 let ws: WebSocket | undefined;
 
-const store = reactive({
-  message: "",
-  messages: [] as { id: number, user: string, message: string, created_at: string }[],
-});
+const message = ref<string>("");
+const messages = useState<{ id: number, user: string, message: string, created_at: string }[]>(() => []);
+
+const userId = useCookie<string>("userId")
+if (!userId.value) {
+  userId.value = Math.random().toString(36).substring(7);
+}
+
+const res = await $fetch("/api/messages")
+messages.value.push(...res.messages)
 
 const log = (user: string, ...args: string[]) => {
   console.log("[ws]", user, ...args);
-  store.messages.unshift({
-    id: Math.random(),
+  messages.value.push({
+    id: 0,
     message: args.join(" "),
     user: user,
     created_at: new Date().toLocaleString(),
@@ -18,7 +24,7 @@ const log = (user: string, ...args: string[]) => {
 
 const connect = async () => {
   const isSecure = location.protocol === "https:";
-  const url = (isSecure ? "wss://" : "ws://") + location.host + "/api/chat-ws";
+  const url = (isSecure ? "wss://" : "ws://") + location.host + "/api/chat-ws?userId=" + userId.value;
   if (ws) {
     log("ws", "Closing previous connection before reconnecting...");
     ws.close();
@@ -43,16 +49,16 @@ const connect = async () => {
 };
 
 const clear = () => {
-  store.messages.splice(0, store.messages.length);
+  messages.value.splice(0, messages.value.length);
   log("system", "previous messages cleared");
 };
 
 const send = () => {
   console.log("sending message...");
-  if (store.message) {
-    ws!.send(store.message);
+  if (message.value) {
+    ws!.send(message.value);
   }
-  store.message = "";
+  message.value = "";
 };
 
 const ping = () => {
@@ -60,18 +66,14 @@ const ping = () => {
   ws!.send("ping");
 };
 
-const rand = Math.random()
-
-onMounted(() => {
+onMounted(async () => {
   connect();
-  $fetch("/api/messages").then((res) => {
-    store.messages.push(...res.messages);
-  });
 });
 
 useServerHead({
   title: "Nuxt Chat",
 })
+
 </script>
 
 
@@ -86,12 +88,11 @@ useServerHead({
 
       <!-- Messages -->
       <div id="messages" class="flex-grow flex flex-col justify-end px-4 pt-8 pb-21 sm:pb-12 bg-slate-900 min-h-screen">
-        <div class="flex items-center mb-4" v-for="message in store.messages" :key="message.id">
+        <div class="flex items-center mb-4" v-for="message in messages" :key="message.id">
           <div class="flex flex-col">
             <p class="text-gray-500 mb-1 text-xs ml-10">{{ message.user }}</p>
             <div class="flex items-center">
-              <img
-                :src="'https://www.gravatar.com/avatar/' + encodeURIComponent(message.user + rand) + '?s=512&d=monsterid'"
+              <img :src="'https://www.gravatar.com/avatar/' + encodeURIComponent(message.user) + '?s=512&d=monsterid'"
                 alt="Avatar" class="w-8 h-8 rounded-full" />
               <div class="ml-2 bg-gray-800 rounded-lg p-2">
                 <p class="text-white">{{ message.message }}</p>
@@ -107,7 +108,7 @@ useServerHead({
         <div class="w-full min-w-6">
           <input type="text" placeholder="Type your message..."
             class="w-full rounded-none px-4 py-2 bg-gray-700 text-white focus:outline-none focus:ring focus:border-blue-300 sm:rounded-l-lg"
-            @keydown.enter="send" v-model="store.message" />
+            @keydown.enter="send" v-model="message" />
         </div>
         <div class="flex w-full">
           <button class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 w-1/4" @click="send">

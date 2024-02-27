@@ -1,5 +1,5 @@
 import type { Peer } from 'crossws';
-import { parse as parseCookies } from "cookie-es";
+import { getQuery } from "ufo"
 
 const users = new Map<string, { online: boolean }>();
 
@@ -48,19 +48,17 @@ export default defineWebSocketHandler({
   },
 
   upgrade(req) {
-    const userId = Math.random().toString(36).slice(2);
     return {
       headers: {
-        "x-powered-by": "cross-ws",
-        "set-cookie": `chatUserId=${userId}; SameSite=None; Secure`,
+        "x-powered-by": "cross-ws"
       },
     };
   },
 });
 
 function getUserId(peer: Peer) {
-  const cookies = parseCookies(new Headers(peer.headers).get("cookie") || "")
-  return cookies.chatUserId || "";
+  const query = getQuery(peer.url);
+  return query.userId as string;
 }
 
 function getStats() {
