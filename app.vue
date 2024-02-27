@@ -8,7 +8,7 @@ const store = reactive({
 
 const log = (user: string, ...args: string[]) => {
   console.log("[ws]", user, ...args);
-  store.messages.push({
+  store.messages.unshift({
     id: Math.random(),
     message: args.join(" "),
     user: user,
