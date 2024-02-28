@@ -23,20 +23,20 @@ export default defineWebSocketHandler({
     console.log(`[ws] message ${peer} ${message.text()}`);
 
     const userId = getUserId(peer);
-
     if (message.text() === "ping") {
       peer.send({ user: "server", message: "pong" });
-    } else {
-      const _message = {
-        user: userId,
-        message: message.text(),
-      };
-      peer.send(_message); // echo back
-      peer.publish("chat", _message);
-
-      // no spam ping and pong =)
-      await addMessage(userId, message.text());
+      return
     }
+
+    const _message = {
+      user: userId,
+      message: message.text(),
+    };
+    peer.send(_message); // echo back
+    peer.publish("chat", _message);
+
+    // Store message in database
+    await addMessage(userId, message.text());
   },
 
   close(peer, details) {
